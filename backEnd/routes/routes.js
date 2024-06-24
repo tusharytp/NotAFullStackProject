@@ -2,7 +2,11 @@ const express = require('express');
 const router = express.Router();
 const {
     storingCredentialsInDb,
-    credentialVerification
+    credentialVerification,
+    getAllData,
+    postData,
+    deleteData,
+    putData
 } = require('../controllers/logic');
 
 router
@@ -13,5 +17,12 @@ router
     .route('/signin')
     .post(credentialVerification)
 
+router
+    .route('/data')
+    .get(getAllData)
+    .post(postData)
+router
+    .put('/data/:id', putData)
+    .delete('/data/:id', deleteData)
 module.exports = router;
 
