@@ -1,4 +1,5 @@
 const bc = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 const { userCredentialsModel, userModel } = require('../models/model');
 
 async function storingCredentialsInDb(req, res) {
@@ -23,12 +24,19 @@ async function storingCredentialsInDb(req, res) {
 
 async function credentialVerification(req, res) {
     const { email, password } = req.body;
+    JWT_SECRET_KEY = ';sdfkh;shdfmasnuhnagp;kagpoianl;fg'
     try {
         const user = await userCredentialsModel.findOne({ email: email });
         if (user) {
             const isMatch = await bc.compare(password, user.password);
             if (isMatch) {
-                res.status(200).json({ msg: 'Success' });
+                const token = jwt.sign({ email: email }, JWT_SECRET_KEY)
+                if (token) {
+                    return res.status(200).json({ msg: 'Success', data: token });
+                } else {
+                    return res.json({ msg: 'error' })
+                }
+
             } else {
                 res.status(401).json({ msg: 'Invalid Email/Password' });
             }
